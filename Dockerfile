@@ -14,6 +14,7 @@ COPY setup.py /tmp/
 COPY testing/ /tmp/testing
 
 
+
 WORKDIR /tmp
 RUN pip3 install .
 
