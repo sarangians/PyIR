@@ -40,8 +40,11 @@ cd $MAIN
 ######################
 # FORMAT FASTA FILES #
 ######################
-if [ -d $MAIN/pyir_data ]; then
-    rm -rf $MAIN/pyir_data
+if [ -d $MAIN/pyir_data/TCR/human ]; then
+    rm -rf $MAIN/pyir_data/TCR/human
+fi
+if [ -d $MAIN/pyir_data/Ig/human ]; then
+    rm -rf $MAIN/pyir_data/Ig/human
 fi
 
 
@@ -52,8 +55,8 @@ cd $MAIN/pyir_data
 
 # Download igblast internal and aux data
 # All data can be manually downloaded here ftp://ftp.ncbi.nih.gov/blast/executables/igblast/release or use the following convenience commands
-wget -mnH --cut-dirs=4 ftp://ftp.ncbi.nih.gov/blast/executables/igblast/release/internal_data ./
-wget -mnH --cut-dirs=5 --directory-prefix=aux ftp://ftp.ncbi.nih.gov/blast/executables/igblast/release/optional_file/ ./
+#wget -mnH --cut-dirs=4 ftp://ftp.ncbi.nih.gov/blast/executables/igblast/release/internal_data ./
+#wget -mnH --cut-dirs=5 --directory-prefix=aux ftp://ftp.ncbi.nih.gov/blast/executables/igblast/release/optional_file/ ./
 
 cd $MAIN
 
@@ -123,4 +126,4 @@ pyir ./testing/1K_Seqs.fasta -d pyir_data -o foobar-ig --pretty -f json -r Ig
 ############
 # TEST TCR #
 ############
-pyir ./testing/1K_Seqs-TCR.fasta -d pyir_data -o foobar-tcr --pretty -f json -r TCR
+pyir ./testing/1K_Seqs-TCR.fasta -d pyir_data -o foobar-tcr -cz 100000 --pretty -f json -r TCR
