@@ -1,5 +1,6 @@
 from abc import ABCMeta, abstractmethod
 import collections
+import copy
 import json
 import re
 import pyir.output
@@ -469,6 +470,9 @@ class AlignmentParser(BaseParser):
             'keys': []
         }
 
+        # Complete hit list with possibly identical alleles but different alignment locations which are only listed once in the IgBlastN summary table
+        complete_hits = list()
+
         for alignment in final_alignments:
 
             alignment.al_string = alignment.al_string + (' ' * (max_width - len(alignment.al_string)))
@@ -488,18 +492,20 @@ class AlignmentParser(BaseParser):
                 self.first_frame_index = first_frame_index
 
                 output['AA']= alignment.al_string.replace(' ', '')
-
-            if 'Query' in alignment.id:
+            elif 'Query' in alignment.id:
                 self.query_line_alignment = alignment
+            else:
+                filtered_hits = list(filter((lambda x: x['gene'] == alignment.id ), output['Hits']))
+                if filtered_hits:
+                    filtered_hits[0]['gene_type'] = alignment.gene_type
+                    filtered_hits[0]['alignment_start'] = alignment.start
+                    filtered_hits[0]['alignment_end'] = alignment.end
+                    filtered_hits[0]['percent_identity'] = float(alignment.percent_identity.strip('%'))
+                    filtered_hits[0]['percent_fraction'] = alignment.fraction
 
-            filtered_hits = list(filter((lambda x: x['gene'] == alignment.id ), output['Hits']))
-            if filtered_hits:
-                filtered_hits[0]['gene_type'] = alignment.gene_type
-                filtered_hits[0]['alignment_start'] = alignment.start
-                filtered_hits[0]['alignment_end'] = alignment.end
-                filtered_hits[0]['percent_identity'] = float(alignment.percent_identity.strip('%'))
-                filtered_hits[0]['percent_fraction'] = alignment.fraction
+                    complete_hits.append(copy.deepcopy(filtered_hits[0]))
 
+        output["Hits"] =  complete_hits
         output['NT-Trimmed'] = self.query_line_alignment.al_string[self.first_frame_index:]
 
         match_index = 0
