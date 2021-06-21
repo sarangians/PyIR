@@ -171,9 +171,9 @@ class PyIrArgumentParser():
             '-s',
             '--species',
             dest='species',
-            default='human',
-            # choices=['human', 'mouse', 'rabbit', 'rat', 'rhesus_monkey'],
-            choices=['human'],
+            default='mouse',
+            choices=['human', 'mouse', 'rabbit', 'rat', 'rhesus_monkey'],
+            #choices=['human'],
             help='The Species you are analyzing'
         )
 
